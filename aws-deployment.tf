@@ -120,9 +120,18 @@ data "local_file" "docker_file" {
 resource "null_resource" "deploy_new_task" {
 
   triggers {
-    docker_image = "${local.remote_docker_image}"
-    docker_dir = "${base64sha256(data.local_file.docker_file.content)}"
-    identifier = "${uuid()}"
+    docker_image = "${local.cannonical_name}-${var.app_version}"
+    docker_file = "${base64sha256(data.local_file.docker_file.content)}"
+
+    task_def = "${base64sha256(data.template_file.container_task.rendered)}"
+    profile = "${var.aws_profile}"
+    image = "${aws_ecr_repository.default.repository_url}"
+    service = "${aws_ecs_service.default.name}"
+    cluster = "${aws_ecs_cluster.default.arn}"
+
+    deploy_spec = "${base64sha256(data.template_file.container_spec.rendered)}"
+    deploy_app = "${aws_codedeploy_app.default.name}"
+    deploy_group = "${aws_codedeploy_deployment_group.default.deployment_group_name}"
   }
 
   provisioner "local-exec" {
