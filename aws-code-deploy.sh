@@ -1,28 +1,40 @@
 #!/usr/bin/env bash
 DIR=$(dirname $0)
+ENV=${1?"Environment not defined. Usage: $0 [ENV]"}
+CONF=${DIR}/${ENV}/conf.sh
 
-if [ ! -f ${DIR}/deploy.conf ]; then
-    echo "Deployment not configured. Have you tried rerun terraform module again?"
+if [ ! -f ${CONF} ]; then
+    echo "Deployment not configured for env ${ENV}"
+    echo "As this wrapper was generated automatically, please try to execute terraform deployment again."
     exit 2
 else
-    . ${DIR}/deploy.conf
+    . ${CONF}
 fi
 
 ## FUNCTIONS
+info(){
+  printf "\033[1;33m$@\e[m\n"
+}
+
+run_with_color(){
+  ("$@" 2>&1 1>&3| sed $'s,.*, \e[37m::\e[m \e[31m&\e[m,' >&2 ) 3>&1 | sed $'s,.*, \e[37m:: &\e[m,'
+  echo
+}
+
 docker_package(){
-  echo "Building Docker image ${DOCKER_IMAGE}..."
-  docker build -t "${DOCKER_IMAGE}" ${DOCKER_FOLDER}
+  info "Building Docker image ${DOCKER_IMAGE}..."
+  run_with_color docker build -t "${DOCKER_IMAGE}" ${DOCKER_FOLDER}
 }
 
 docker_deploy(){
-  echo "Pushing Docker image ${DOCKER_IMAGE}..."
+  info "Pushing Docker image ${DOCKER_IMAGE}..."
   $(aws ecr get-login --no-include-email)
-  docker push "${DOCKER_IMAGE}"
+  run_with_color docker push "${DOCKER_IMAGE}"
 }
 
 codedeploy_deploy(){
-  echo "Notifying CodeDeploy about the new software revision..."
-  aws ecs deploy \
+  info "Notifying CodeDeploy about the new software revision..."
+  run_with_color aws ecs deploy \
     --service ${ECS_SERVICE} \
     --cluster ${ECS_CLUSTER} \
     --task-definition "${ECS_FILE_TASK_DEF}" \
