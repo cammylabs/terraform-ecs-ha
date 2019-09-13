@@ -2,7 +2,7 @@
   {
     "name": "${name}",
     "image": "python:2-alpine",
-    "cpu": 10,
+    "cpu": 256,
     "memory": 512,
     "essential": true,
     "command": [
