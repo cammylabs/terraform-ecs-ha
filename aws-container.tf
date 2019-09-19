@@ -59,7 +59,7 @@ resource "aws_ecs_service" "default" {
   network_configuration {
     assign_public_ip = true
     security_groups  = [aws_security_group.instances.id]
-    subnets          = var.vpc_subnet_ids
+    subnets          = var.ecs_subnet_ids
   }
 
   load_balancer {
@@ -86,6 +86,12 @@ resource "aws_ecs_service" "default" {
       load_balancer
     ]
   }
+}
+
+# CloudWatch Logs
+resource "aws_cloudwatch_log_group" "default" {
+  name              = local.cannonical_name
+  retention_in_days = var.logs_retention_in_days
 }
 
 data "template_file" "container_initial_task" {

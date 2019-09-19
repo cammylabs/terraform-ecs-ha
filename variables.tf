@@ -40,26 +40,31 @@ variable "vpc_id" {
   description = "The VPC Id the AWS resources will be attached to"
 }
 
-variable "vpc_subnet_ids" {
-  description = "The network subnets this architecture will be running"
-  type        = list(string)
-}
-
 variable "route53_zone_id" {
   description = "The Route53's Zone Id in which a Record A will point to the Load Balancer"
+}
+
+variable "route53_root_domain" {
+  description = "The root domain in which a human-readable DNS entry that will be created and point to the Load Balancer"
+}
+
+variable "route53_record_name" {
+  description = "Record name to be used along with the 'route53_root_domain'"
+  default = ""
 }
 
 variable "acm_certificate_arn" {
   description = "The ACM certificate ARN to be used in the ALB's Target Group Listener"
 }
 
+variable "logs_retention_in_days" {
+  description = "How long should the log be retained"
+  default = 1
+}
+
 variable "ecs_desired_count" {
   description = "The number of instances of the task definition to place and keep running. Defaults"
   default     = 1
-}
-
-variable "ecs_friendly_dns" {
-  description = "A human friendly DNS entry that will point to the Load Balancer"
 }
 
 variable "ecs_port" {
@@ -92,6 +97,11 @@ variable "ecs_app_spec" {
   default     = ""
 }
 
+variable "ecs_subnet_ids" {
+  description = "The network subnets in which ECS task will be running"
+  type        = list(string)
+}
+
 variable "lb_health_check_path" {
   description = "The destination for the health check request"
   default     = "/health-check"
@@ -117,9 +127,15 @@ variable "lb_deregistration_delay" {
   default     = 20
 }
 
+variable "lb_subnet_ids" {
+  description = "The network subnets in which Load Balancer will be running"
+  type        = list(string)
+}
+
 # Computed global variables
 locals {
   cannonical_name = "${var.app_name}-${var.app_environment}"
+  route53_record = var.route53_record_name == "" ? local.cannonical_name : var.route53_record_name
   deployment_root_path = var.deployment_root_path == "" ? "${var.docker_root_path}/../deployment" : var.deployment_root_path
 }
 

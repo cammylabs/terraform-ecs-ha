@@ -19,6 +19,7 @@ DEPLOY_GRP="$1"; shift
 DEPLOY_SPEC="$1"; shift
 DEPLOYMENT_FOLDER="$1"; shift
 ENVIRONMENT="$1"; shift
+APP_NAME="$1"; shift
 
 FILE_TASK_DEF="${DEPLOYMENT_FOLDER}/${ENVIRONMENT}/task-def.json"
 FILE_DEPLOY_SPEC="${DEPLOYMENT_FOLDER}/${ENVIRONMENT}/deploy-spec.json"
@@ -41,15 +42,15 @@ ECS_DEPLOY_APP=${DEPLOY_APP?"Not defined"}
 ECS_DEPLOY_GRP=${DEPLOY_GRP?"Not defined"}
 ECS_FILE_TASK_DEF=\${CWD}/${ENVIRONMENT}/task-def.json
 ECS_FILE_DEPLOY_SPEC=\${CWD}/${ENVIRONMENT}/deploy-spec.json
+APP_NAME=${APP_NAME}
+ENVIRONMENT=${ENVIRONMENT}
 EOF
 
 echo "${TASK_DEF}" > ${FILE_TASK_DEF}
 echo "${DEPLOY_SPEC}" > ${FILE_DEPLOY_SPEC}
 
-if [ ! -f ${DEPLOYMENT_FOLDER}/deploy.sh ]; then
-    cp ${SCRIPT_DIR}/aws-code-deploy.sh ${DEPLOYMENT_FOLDER}/deploy.sh
-    chmod +x ${DEPLOYMENT_FOLDER}/deploy.sh
-fi
+cp ${SCRIPT_DIR}/aws-code-deploy.sh ${DEPLOYMENT_FOLDER}/deploy.sh
+chmod +x ${DEPLOYMENT_FOLDER}/deploy.sh
 
 echo "Deployment folder updated: ${DEPLOYMENT_FOLDER}"
 exit 0

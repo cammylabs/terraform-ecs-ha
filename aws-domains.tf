@@ -2,7 +2,7 @@
 
 resource "aws_route53_record" "submain" {
   zone_id = var.route53_zone_id
-  name    = "${var.app_name}.${var.ecs_friendly_dns}"
+  name    = "${local.route53_record}.${var.route53_root_domain}"
   type    = "A"
 
   alias {

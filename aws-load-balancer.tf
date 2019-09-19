@@ -6,7 +6,7 @@ resource "aws_alb" "default" {
   load_balancer_type = "application"
   internal           = false
 
-  subnets = var.vpc_subnet_ids
+  subnets = var.lb_subnet_ids
 }
 
 resource "aws_alb_listener" "http" {

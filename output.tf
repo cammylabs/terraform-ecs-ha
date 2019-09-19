@@ -27,3 +27,11 @@ output "lb_fqdns" {
   description = "The Load Balancer FQDNS"
   value = aws_alb.default.dns_name
 }
+
+output "route53_record" {
+  value = aws_route53_record.submain.fqdn
+}
+
+output "log_group_arn" {
+  value = aws_cloudwatch_log_group.default.arn
+}

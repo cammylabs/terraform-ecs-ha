@@ -125,7 +125,7 @@ resource "null_resource" "deploy_new_task" {
   }
 
   provisioner "local-exec" {
-    command = "$DEPLOY $PROFILE $REGION $IMAGE $SERVICE $CLUSTER \"$TASK_DEF\" \"$DOCKER_ROOT\" \"$DOCKER_PARENT\" $DEPLOY_APP $DEPLOY_GRP \"$DEPLOY_SPEC\" \"$DEPLOY_ROOT\" $ENVIRONMENT"
+    command = "$DEPLOY $PROFILE $REGION $IMAGE $SERVICE $CLUSTER \"$TASK_DEF\" \"$DOCKER_ROOT\" \"$DOCKER_PARENT\" $DEPLOY_APP $DEPLOY_GRP \"$DEPLOY_SPEC\" \"$DEPLOY_ROOT\" $ENVIRONMENT $APP_NAME"
 
     environment = {
       DEPLOY      = "${path.module}/aws-container-deploy-gen.sh"
@@ -142,6 +142,7 @@ resource "null_resource" "deploy_new_task" {
       DEPLOY_SPEC = data.template_file.container_spec.rendered
       DEPLOY_ROOT = local.deployment_root_path
       ENVIRONMENT = var.app_environment
+      APP_NAME    = var.app_name
     }
   }
 
