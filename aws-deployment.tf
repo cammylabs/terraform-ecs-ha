@@ -125,7 +125,7 @@ resource "null_resource" "deploy_new_task" {
   }
 
   provisioner "local-exec" {
-    command = "$DEPLOY $PROFILE $REGION $IMAGE $SERVICE $CLUSTER \"$TASK_DEF\" \"$DOCKER_ROOT\" $DEPLOY_APP $DEPLOY_GRP \"$DEPLOY_SPEC\" \"$DEPLOY_ROOT\" $ENVIRONMENT"
+    command = "$DEPLOY $PROFILE $REGION $IMAGE $SERVICE $CLUSTER \"$TASK_DEF\" \"$DOCKER_ROOT\" \"$DOCKER_PARENT\" $DEPLOY_APP $DEPLOY_GRP \"$DEPLOY_SPEC\" \"$DEPLOY_ROOT\" $ENVIRONMENT"
 
     environment = {
       DEPLOY      = "${path.module}/aws-container-deploy-gen.sh"
@@ -136,6 +136,7 @@ resource "null_resource" "deploy_new_task" {
       CLUSTER     = aws_ecs_cluster.default.arn
       TASK_DEF    = data.template_file.container_task.rendered
       DOCKER_ROOT = var.docker_root_path
+      DOCKER_PARENT = var.docker_parent_image
       DEPLOY_APP  = aws_codedeploy_app.default.name
       DEPLOY_GRP  = aws_codedeploy_deployment_group.default.deployment_group_name
       DEPLOY_SPEC = data.template_file.container_spec.rendered

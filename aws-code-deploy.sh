@@ -23,7 +23,11 @@ run_with_color(){
 
 docker_package(){
   info "Building Docker image ${DOCKER_IMAGE}..."
-  run_with_color docker build -t "${DOCKER_IMAGE}" ${DOCKER_FOLDER}
+  DOCKER_OPTS=""
+  if [ ! "${DOCKER_PARENT}" = "" ]; then
+    DOCKER_OPTS="--build-arg PARENT_IMAGE=${DOCKER_PARENT}"
+  fi
+  run_with_color docker build -t "${DOCKER_IMAGE}" ${DOCKER_OPTS} ${DOCKER_FOLDER}
 }
 
 docker_deploy(){

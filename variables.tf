@@ -16,6 +16,11 @@ variable "docker_root_path" {
   description = "The root folder to generate the Docker image. Usually the place where Dockerfile is located"
 }
 
+variable "docker_parent_image" {
+  description = "The parent image used as base for your deployment. [Optional]"
+  default = ""
+}
+
 variable "deployment_root_path" {
   description = "The folder that will contain all resources required to perform a release deployment"
   default = ""
