@@ -1,8 +1,31 @@
 # Local vars
 locals {
   file_container_role         = "${path.module}/aws-container-assume-role.json"
-  file_container_policy       = "${path.module}/aws-container-role-policy.json"
   file_container_initial_task = "${path.module}/aws-container-initial-task.json"
+
+  container_policy = {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        Effect: "Allow",
+        Action: [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage"
+        ],
+        Resource: "*"
+      },
+      {
+        Effect: "Allow",
+        Action: [
+          "logs:PutLogEvents",
+          "logs:CreateLogStream"
+        ]
+        Resource: aws_cloudwatch_log_group.default.arn
+      }
+    ]
+  }
 
   remote_docker_image = "${aws_ecs_task_definition.initial.family}:${aws_ecs_task_definition.initial.revision}"
 }
@@ -15,7 +38,7 @@ resource "aws_iam_role" "container" {
 
 resource "aws_iam_policy" "container" {
   name   = "${local.cannonical_name}-container"
-  policy = file(local.file_container_policy)
+  policy = jsonencode(local.container_policy)
 }
 
 resource "aws_iam_role_policy_attachment" "container" {

@@ -12,7 +12,7 @@ resource "aws_iam_role" "autoscaling" {
 
 resource "aws_iam_policy" "autoscaling" {
   name   = "${local.cannonical_name}-autoscaling"
-  policy = file(local.file_container_policy)
+  policy = file(local.file_autoscaling_policy)
 }
 
 resource "aws_iam_role_policy_attachment" "autoscaling" {
