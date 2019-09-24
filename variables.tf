@@ -14,7 +14,6 @@ variable "app_environment" {
 
 variable "datadog_api_key" {
   description = "DataDog API KEY. https://docs.datadoghq.com/agent/docker/?tab=standard"
-  default = ""
 }
 
 variable "docker_root_path" {

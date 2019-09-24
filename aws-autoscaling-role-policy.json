@@ -3,21 +3,18 @@
   "Statement": [
     {
       "Effect": "Allow",
+      "Resource": "*",
       "Action": [
         "ecs:DescribeServices",
         "ecs:UpdateService"
-      ],
-      "Resource": [
-        "*"
       ]
     },
     {
       "Effect": "Allow",
+      "Resource": "*",
       "Action": [
-        "cloudwatch:DescribeAlarms"
-      ],
-      "Resource": [
-        "*"
+        "cloudwatch:DescribeAlarms",
+        "cloudwatch:PutMetricAlarm"
       ]
     }
   ]
