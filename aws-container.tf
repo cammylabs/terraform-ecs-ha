@@ -28,6 +28,12 @@ locals {
   }
 
   remote_docker_image = "${aws_ecs_task_definition.initial.family}:${aws_ecs_task_definition.initial.revision}"
+
+  default_file_container_task = "${path.module}/aws-container-task.json"
+  default_file_container_spec = "${path.module}/aws-container-spec.json"
+
+  file_container_task         = var.ecs_task_definition == "" ? local.default_file_container_task : var.ecs_task_definition
+  file_container_spec         = var.ecs_app_spec == "" ? local.default_file_container_spec : var.ecs_app_spec
 }
 
 # Permissions
@@ -46,9 +52,10 @@ resource "aws_iam_role_policy_attachment" "container" {
   policy_arn = aws_iam_policy.container.arn
 }
 
-# CloudWatch Log Group for the ECS container
-resource "aws_cloudwatch_log_group" "container" {
-  name = local.cannonical_name
+# CloudWatch Logs
+resource "aws_cloudwatch_log_group" "default" {
+  name              = local.cannonical_name
+  retention_in_days = var.logs_retention_in_days
 }
 
 # Docker Registry Repository
@@ -61,6 +68,10 @@ resource "aws_ecs_cluster" "default" {
   name = local.cannonical_name
 }
 
+# Initial task - it is required as Fargate expects a task to
+# be deployed before you create a Service and spin up a new cluster.
+# This initial task is basically a naive container returning 200
+# for every GET request you send to it.
 resource "aws_ecs_task_definition" "initial" {
   family                   = local.cannonical_name
   container_definitions    = data.template_file.container_initial_task.rendered
@@ -72,6 +83,49 @@ resource "aws_ecs_task_definition" "initial" {
   task_role_arn            = aws_iam_role.container.arn
 }
 
+data "template_file" "container_initial_task" {
+  template = file(local.file_container_initial_task)
+
+  vars = {
+    name = local.cannonical_name
+    port = var.ecs_port
+  }
+}
+
+# The Container Task - This is the actual task that will be later deployed
+# by our deployment scripts. This is designed to extract all variables
+# computed during the terraform plan and use it to render the JSON task definition.
+data "template_file" "container_task" {
+  template = file(local.file_container_task)
+
+  vars = {
+    image              = aws_ecr_repository.default.repository_url
+    name               = local.cannonical_name
+    port               = var.ecs_port
+    region             = var.aws_region
+    log-group          = aws_cloudwatch_log_group.default.name
+    family             = local.cannonical_name
+    cpu                = var.ecs_cpu
+    memory             = var.ecs_memory
+    execution_role_arn = aws_iam_role.container.arn
+    task_role_arn      = aws_iam_role.container.arn
+    datadog_api_key    = var.datadog_api_key
+  }
+}
+
+data "template_file" "container_spec" {
+  template = file(local.file_container_spec)
+
+  vars = {
+    image     = aws_ecr_repository.default.repository_url
+    name      = local.cannonical_name
+    port      = var.ecs_port
+    region    = var.aws_region
+    log-group = aws_cloudwatch_log_group.default.name
+  }
+}
+
+# The Service Creation
 resource "aws_ecs_service" "default" {
   name            = local.cannonical_name
   task_definition = local.remote_docker_image
@@ -100,6 +154,7 @@ resource "aws_ecs_service" "default" {
     aws_alb_listener.https,
     aws_alb_listener.http,
     aws_alb.default,
+    aws_cloudwatch_log_group.default
   ]
 
   lifecycle {
@@ -108,20 +163,5 @@ resource "aws_ecs_service" "default" {
       desired_count,
       load_balancer
     ]
-  }
-}
-
-# CloudWatch Logs
-resource "aws_cloudwatch_log_group" "default" {
-  name              = local.cannonical_name
-  retention_in_days = var.logs_retention_in_days
-}
-
-data "template_file" "container_initial_task" {
-  template = file(local.file_container_initial_task)
-
-  vars = {
-    name = local.cannonical_name
-    port = var.ecs_port
   }
 }

@@ -1,12 +1,6 @@
 locals {
   file_codedeploy_role   = "${path.module}/aws-deployment-assume-role.json"
   file_codedeploy_policy = "${path.module}/aws-deployment-role-policy.json"
-
-  default_file_container_task = "${path.module}/aws-container-task.json"
-  file_container_task         = var.ecs_task_definition == "" ? local.default_file_container_task : var.ecs_task_definition
-
-  default_file_container_spec = "${path.module}/aws-container-spec.json"
-  file_container_spec         = var.ecs_app_spec == "" ? local.default_file_container_spec : var.ecs_app_spec
 }
 
 # CodeDeploy Permissions
@@ -77,34 +71,6 @@ resource "aws_codedeploy_deployment_group" "default" {
 }
 
 # Uploading new version
-data "template_file" "container_task" {
-  template = file(local.file_container_task)
-
-  vars = {
-    image              = aws_ecr_repository.default.repository_url
-    name               = local.cannonical_name
-    port               = var.ecs_port
-    region             = var.aws_region
-    log-group          = aws_cloudwatch_log_group.container.name
-    family             = local.cannonical_name
-    cpu                = var.ecs_cpu
-    memory             = var.ecs_memory
-    execution_role_arn = aws_iam_role.container.arn
-    task_role_arn      = aws_iam_role.container.arn
-  }
-}
-
-data "template_file" "container_spec" {
-  template = file(local.file_container_spec)
-
-  vars = {
-    image     = aws_ecr_repository.default.repository_url
-    name      = local.cannonical_name
-    port      = var.ecs_port
-    region    = var.aws_region
-    log-group = aws_cloudwatch_log_group.container.name
-  }
-}
 
 data "local_file" "docker_file" {
   filename = "${var.docker_root_path}/Dockerfile"

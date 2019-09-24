@@ -9,6 +9,12 @@
   "containerDefinitions": [{
     "name": "${name}",
     "image": "${image}",
+    "essential": true,
+    "dockerLabels": {
+      "com.datadoghq.ad.instances": "[{\"host\": \"%%host%%\", \"port\": ${port}}]",
+      "com.datadoghq.ad.check_names": "[\"${name}\"]",
+      "com.datadoghq.ad.init_configs": "[{}]"
+    },
     "portMappings": [{
         "containerPort": ${port},
         "hostPort": ${port}
@@ -25,6 +31,20 @@
       {
         "name": "PORT",
         "value": "${port}"
+      }
+    ]
+  },{
+    "name": "datadog-agent",
+    "image": "datadog/agent:latest",
+    "essential": true,
+    "environment": [
+      {
+        "name": "DD_API_KEY",
+        "value": "${datadog_api_key}"
+      },
+      {
+        "name": "ECS_FARGATE",
+        "value": "true"
       }
     ]
   }]

@@ -12,6 +12,11 @@ variable "app_environment" {
   default     = "staging"
 }
 
+variable "datadog_api_key" {
+  description = "DataDog API KEY. https://docs.datadoghq.com/agent/docker/?tab=standard"
+  default = ""
+}
+
 variable "docker_root_path" {
   description = "The root folder to generate the Docker image. Usually the place where Dockerfile is located"
 }

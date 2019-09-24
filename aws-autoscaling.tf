@@ -79,8 +79,8 @@ resource "aws_cloudwatch_metric_alarm" "service_cpu_high" {
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"
   namespace           = "AWS/ECS"
-  period              = "60"
-  statistic           = "Maximum"
+  period              = "300"
+  statistic           = "Average"
   threshold           = "85"
 
   dimensions = {
@@ -91,4 +91,3 @@ resource "aws_cloudwatch_metric_alarm" "service_cpu_high" {
   alarm_actions = [aws_appautoscaling_policy.scale_up.arn]
   ok_actions    = [aws_appautoscaling_policy.scale_down.arn]
 }
-
