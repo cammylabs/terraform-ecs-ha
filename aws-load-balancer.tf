@@ -49,12 +49,14 @@ resource "aws_alb_target_group" "blue" {
   target_type = "ip"
 
   deregistration_delay = var.lb_deregistration_delay
+  slow_start = var.lb_slow_start
 
   health_check {
     path              = var.lb_health_check_path
     interval          = var.lb_health_check_interval
     timeout           = var.lb_health_check_timeout
     healthy_threshold = var.lb_health_check_threshold
+    unhealthy_threshold = var.lb_health_failure_check_threshold
   }
 }
 
@@ -66,11 +68,13 @@ resource "aws_alb_target_group" "green" {
   target_type = "ip"
 
   deregistration_delay = var.lb_deregistration_delay
+  slow_start = var.lb_slow_start
 
   health_check {
     path              = var.lb_health_check_path
     interval          = var.lb_health_check_interval
     timeout           = var.lb_health_check_timeout
     healthy_threshold = var.lb_health_check_threshold
+    unhealthy_threshold = var.lb_health_failure_check_threshold
   }
 }

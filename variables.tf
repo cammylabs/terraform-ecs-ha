@@ -126,6 +126,10 @@ variable "lb_health_check_threshold" {
   default     = 3
 }
 
+variable "lb_health_failure_check_threshold" {
+  default     = 10
+}
+
 variable "lb_deregistration_delay" {
   description = "The amount time for ELB to wait before changing the state of a deregistering target from draining to unused"
   default     = 20
@@ -134,6 +138,11 @@ variable "lb_deregistration_delay" {
 variable "lb_subnet_ids" {
   description = "The network subnets in which Load Balancer will be running"
   type        = list(string)
+}
+
+variable "lb_slow_start" {
+  description = "The amount time for targets to warm up before the load balancer sends them a full share of requests. The range is 30-900 seconds or 0 to disable. The default value is 0 seconds."
+  default = 0
 }
 
 # Computed global variables
