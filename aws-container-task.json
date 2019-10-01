@@ -31,6 +31,14 @@
       {
         "name": "PORT",
         "value": "${port}"
+      },
+      {
+        "name": "APP_NAME",
+        "value": "${app_name}"
+      },
+      {
+        "name": "ENVIRONMENT",
+        "value": "${environment}"
       }
     ]
   },{
