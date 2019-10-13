@@ -11,6 +11,10 @@ else
     . ${CONF}
 fi
 
+if [ -f $DIR/deploy.custom ]; then
+   . $DIR/deploy.custom
+fi
+
 ## FUNCTIONS
 info(){
   printf "\033[1;33m$@\e[m\n"
