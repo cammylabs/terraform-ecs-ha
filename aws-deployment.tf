@@ -59,11 +59,7 @@ resource "aws_codedeploy_deployment_group" "default" {
 
   load_balancer_info {
     target_group_pair_info {
-      prod_traffic_route {
-        listener_arns = [
-          aws_alb_listener.https.arn]
-      }
-
+      prod_traffic_route { listener_arns = [local.alb_listener.arn] }
       target_group { name = aws_alb_target_group.blue.name }
       target_group { name = aws_alb_target_group.green.name }
     }
@@ -101,12 +97,12 @@ resource "null_resource" "deploy_new_task" {
       SERVICE     = aws_ecs_service.default.name
       CLUSTER     = aws_ecs_cluster.default.arn
       TASK_DEF    = data.template_file.container_task.rendered
-      DOCKER_ROOT = abspath(var.docker_root_path)
+      DOCKER_ROOT = var.docker_root_path
       DOCKER_PARENT = var.docker_parent_image
       DEPLOY_APP  = aws_codedeploy_app.default.name
       DEPLOY_GRP  = aws_codedeploy_deployment_group.default.deployment_group_name
       DEPLOY_SPEC = data.template_file.container_spec.rendered
-      DEPLOY_ROOT = abspath(local.deployment_root_path)
+      DEPLOY_ROOT = local.deployment_root_path
       ENVIRONMENT = var.app_environment
       APP_NAME    = var.app_name
     }
