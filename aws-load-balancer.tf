@@ -1,4 +1,12 @@
 # Load Balancer
+locals {
+  alb_listener = {
+    arn = local.using_auth0 ? aws_alb_listener.https_auth[0].arn : aws_alb_listener.https[0].arn
+    port = local.using_auth0 ? aws_alb_listener.https_auth[0].port : aws_alb_listener.https[0].port
+    protocol = local.using_auth0 ? aws_alb_listener.https_auth[0].protocol : aws_alb_listener.https[0].protocol
+  }
+}
+
 resource "aws_alb" "default" {
   name = local.cannonical_name
 
@@ -19,14 +27,15 @@ resource "aws_alb_listener" "http" {
     type = "redirect"
 
     redirect {
-      port        = aws_alb_listener.https.port
-      protocol    = aws_alb_listener.https.protocol
+      port        = local.alb_listener.port
+      protocol    = local.alb_listener.protocol
       status_code = "HTTP_301"
     }
   }
 }
 
 resource "aws_alb_listener" "https" {
+  count = local.using_auth0 ? 0 : 1
   load_balancer_arn = aws_alb.default.arn
 
   port       = 443
@@ -34,6 +43,35 @@ resource "aws_alb_listener" "https" {
   ssl_policy = "ELBSecurityPolicy-2016-08"
 
   certificate_arn = var.acm_certificate_arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.blue.arn
+  }
+}
+
+resource "aws_alb_listener" "https_auth" {
+  count = local.using_auth0 ? 1 : 0
+  load_balancer_arn = aws_alb.default.arn
+
+  port       = 443
+  protocol   = "HTTPS"
+  ssl_policy = "ELBSecurityPolicy-2016-08"
+
+  certificate_arn = var.acm_certificate_arn
+
+  default_action {
+    type = "authenticate-oidc"
+
+    authenticate_oidc {
+      authorization_endpoint = var.auth0_authorization_endpoint
+      client_id              = var.auth0_client_id
+      client_secret          = var.auth0_client_secret
+      issuer                 = var.auth0_issuer
+      token_endpoint         = var.auth0_token_endpoint
+      user_info_endpoint     = var.auth0_user_info_endpoint
+    }
+  }
 
   default_action {
     type             = "forward"
