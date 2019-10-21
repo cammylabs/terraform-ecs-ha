@@ -1,10 +1,6 @@
 # Load Balancer
 locals {
-  alb_listener = {
-    arn = local.using_auth0 ? aws_alb_listener.https_auth[0].arn : aws_alb_listener.https[0].arn
-    port = local.using_auth0 ? aws_alb_listener.https_auth[0].port : aws_alb_listener.https[0].port
-    protocol = local.using_auth0 ? aws_alb_listener.https_auth[0].protocol : aws_alb_listener.https[0].protocol
-  }
+  alb_listener_arn = local.using_auth0 ? aws_alb_listener.https_auth[0].arn : aws_alb_listener.https[0].arn
 }
 
 resource "aws_alb" "default" {
@@ -27,8 +23,8 @@ resource "aws_alb_listener" "http" {
     type = "redirect"
 
     redirect {
-      port        = local.alb_listener.port
-      protocol    = local.alb_listener.protocol
+      port        = 443
+      protocol    = "HTTPS"
       status_code = "HTTP_301"
     }
   }
@@ -47,6 +43,10 @@ resource "aws_alb_listener" "https" {
   default_action {
     type             = "forward"
     target_group_arn = aws_alb_target_group.blue.arn
+  }
+
+  lifecycle {
+    ignore_changes = [ default_action ]
   }
 }
 
@@ -76,6 +76,10 @@ resource "aws_alb_listener" "https_auth" {
   default_action {
     type             = "forward"
     target_group_arn = aws_alb_target_group.blue.arn
+  }
+
+  lifecycle {
+    ignore_changes = [ default_action ]
   }
 }
 

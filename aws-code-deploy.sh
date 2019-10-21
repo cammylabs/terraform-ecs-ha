@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+cd $(dirname $0)
 DIR=$(dirname $0)
 ENV=${1?"Environment not defined. Usage: $0 [ENV]"}
 CONF=${DIR}/${ENV}/conf.sh
