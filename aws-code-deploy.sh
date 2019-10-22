@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 cd $(dirname $0)
-DIR=$(dirname $0)
+DIR=$(pwd)
 ENV=${1?"Environment not defined. Usage: $0 [ENV]"}
-CONF=${DIR}/${ENV}/conf.sh
+CONF=./${ENV}/conf.sh
 
 if [ ! -f ${CONF} ]; then
     echo "Deployment not configured for env ${ENV}"
@@ -12,8 +12,8 @@ else
     . ${CONF}
 fi
 
-if [ -f $DIR/deploy.custom ]; then
-   . $DIR/deploy.custom
+if [ -f ./deploy.custom ]; then
+   . ./deploy.custom
 fi
 
 ## FUNCTIONS
