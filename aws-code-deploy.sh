@@ -4,18 +4,6 @@ DIR=$(pwd)
 ENV=${1?"Environment not defined. Usage: $0 [ENV]"}
 CONF=./${ENV}/conf.sh
 
-if [ ! -f ${CONF} ]; then
-    echo "Deployment not configured for env ${ENV}"
-    echo "As this wrapper was generated automatically, please try to execute terraform deployment again."
-    exit 2
-else
-    . ${CONF}
-fi
-
-if [ -f ./deploy.custom ]; then
-   . ./deploy.custom
-fi
-
 ## FUNCTIONS
 info(){
   printf "\033[1;33m$@\e[m\n"
@@ -55,6 +43,14 @@ codedeploy_deploy(){
 }
 
 ## VARIABLES
+if [ ! -f ${CONF} ]; then
+    echo "Deployment not configured for env ${ENV}"
+    echo "As this wrapper was generated automatically, please try to execute terraform deployment again."
+    exit 2
+else
+    . ${CONF}
+fi
+
 AWS_PROFILE=${AWS_PROFILE?"Not defined"}
 AWS_REGION=${AWS_REGION?"Not defined"}
 DOCKER_FOLDER=${DOCKER_FOLDER?"Not defined"}
@@ -67,6 +63,10 @@ ECS_FILE_TASK_DEF=${ECS_FILE_TASK_DEF?"Not defined"}
 ECS_FILE_DEPLOY_SPEC=${ECS_FILE_DEPLOY_SPEC?"Not defined"}
 APP_NAME=${APP_NAME?"Not defined"}
 ENVIRONMENT=${ENVIRONMENT?"Not defined"}
+
+if [ -f ./deploy.custom ]; then
+   . ./deploy.custom
+fi
 
 docker_package && \
   docker_deploy && \
