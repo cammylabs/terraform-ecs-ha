@@ -67,15 +67,9 @@ resource "aws_codedeploy_deployment_group" "default" {
 }
 
 # Uploading new version
-
-data "local_file" "docker_file" {
-  filename = "${var.docker_root_path}/Dockerfile"
-}
-
 resource "null_resource" "deploy_new_task" {
   triggers = {
     docker_image = "${local.cannonical_name}-${var.app_version}"
-    docker_file  = base64sha256(data.local_file.docker_file.content)
     task_def     = base64sha256(data.template_file.container_task.rendered)
     profile      = var.aws_profile
     image        = aws_ecr_repository.default.repository_url
