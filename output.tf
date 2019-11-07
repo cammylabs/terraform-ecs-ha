@@ -13,6 +13,16 @@ output "iam_role_name" {
   value = aws_iam_role.container.name
 }
 
+output "ec2_security_groups_instances_name" {
+  description = "The name of the EC2 Security Group attached to instances/tasks"
+  value = aws_security_group.instances.name
+}
+
+output "ec2_security_groups_instances_arn" {
+  description = "The ARN of the EC2 Security Group attached to instances/tasks"
+  value = aws_security_group.instances.arn
+}
+
 output "lb_arn" {
   description = "The Load Balancer arn"
   value = aws_alb.default.arn
