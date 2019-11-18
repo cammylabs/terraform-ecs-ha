@@ -159,5 +159,8 @@ locals {
   cannonical_name = "${var.app_name}-${var.app_environment}"
   route53_record = var.route53_record_name == "" ? local.cannonical_name : var.route53_record_name
   deployment_root_path = var.deployment_root_path == "" ? "${var.docker_root_path}/../deployment" : var.deployment_root_path
+  app_tags = {
+    app_name        = var.app_name
+    app_environment = var.app_environment
+  }
 }
-

@@ -11,6 +11,8 @@ resource "aws_alb" "default" {
   internal           = false
 
   subnets = var.lb_subnet_ids
+
+  tags = local.app_tags
 }
 
 resource "aws_alb_listener" "http" {
