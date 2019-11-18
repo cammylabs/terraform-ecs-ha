@@ -23,6 +23,11 @@ output "ec2_security_groups_instances_arn" {
   value = aws_security_group.instances.arn
 }
 
+output "ec2_security_groups_instances_id" {
+  description = "The id of the EC2 Security Group attached to instances/tasks"
+  value = aws_security_group.instances.id
+}
+
 output "lb_arn" {
   description = "The Load Balancer arn"
   value = aws_alb.default.arn
