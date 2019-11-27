@@ -1,6 +1,9 @@
 locals {
   file_codedeploy_role   = "${path.module}/aws-deployment-assume-role.json"
   file_codedeploy_policy = "${path.module}/aws-deployment-role-policy.json"
+  listener_arn = var.enable_nlb ? aws_lb_listener.https[0].arn : local.alb_listener_arn
+  target_group_name_blue = var.enable_nlb ? aws_lb_target_group.blue[0].name : aws_alb_target_group.blue[0].name
+  target_group_name_green = var.enable_nlb ? aws_lb_target_group.green[0].name : aws_alb_target_group.green[0].name
 }
 
 # CodeDeploy Permissions
@@ -59,9 +62,9 @@ resource "aws_codedeploy_deployment_group" "default" {
 
   load_balancer_info {
     target_group_pair_info {
-      prod_traffic_route { listener_arns = [local.alb_listener_arn] }
-      target_group { name = aws_alb_target_group.blue.name }
-      target_group { name = aws_alb_target_group.green.name }
+      prod_traffic_route { listener_arns = [local.listener_arn] }
+      target_group { name = local.target_group_name_blue }
+      target_group { name = local.target_group_name_green }
     }
   }
 }

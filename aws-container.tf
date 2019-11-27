@@ -3,6 +3,12 @@ locals {
   file_container_role         = "${path.module}/aws-container-assume-role.json"
   file_container_initial_task = "${path.module}/aws-container-initial-task.json"
 
+  target_group_arn = var.enable_nlb ? aws_lb_target_group.blue[0].arn : aws_alb_target_group.blue[0].arn
+  target_group_blue = var.enable_nlb ? aws_lb_target_group.blue[0] : aws_alb_target_group.blue[0]
+  lb_https = var.enable_nlb ? aws_lb_listener.https : aws_alb_listener.https
+  lb_http = var.enable_nlb ? aws_lb_listener.http : aws_alb_listener.http
+  lb_default = var.enable_nlb ? aws_lb.network_load_balancer[0] : aws_alb.default[0]
+
   container_policy = {
     "Version": "2012-10-17",
     "Statement": [
@@ -142,7 +148,7 @@ resource "aws_ecs_service" "default" {
   }
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.blue.arn
+    target_group_arn = local.target_group_arn
     container_name   = local.cannonical_name
     container_port   = var.ecs_port
   }
@@ -152,10 +158,10 @@ resource "aws_ecs_service" "default" {
   }
 
   depends_on = [
-    aws_alb_target_group.blue,
-    aws_alb_listener.https,
-    aws_alb_listener.http,
-    aws_alb.default,
+    local.target_group_blue,
+    local.lb_https,
+    local.lb_http,
+    local.lb_default,
     aws_cloudwatch_log_group.default
   ]
 

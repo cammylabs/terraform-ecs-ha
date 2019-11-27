@@ -145,6 +145,12 @@ variable "lb_slow_start" {
   default = 0
 }
 
+variable "enable_nlb" {
+  description = "1 means using nlb intead of alb, default is 0"
+  default = false
+}
+
+
 # Auth0 Variables (optional, use only when required)
 variable "auth0_authorization_endpoint" { default = "" }
 variable "auth0_client_id" { default = "" }

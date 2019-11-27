@@ -30,17 +30,17 @@ output "ec2_security_groups_instances_id" {
 
 output "lb_arn" {
   description = "The Load Balancer arn"
-  value = aws_alb.default.arn
+  value = aws_alb.default[0].arn
 }
 
 output "lb_name" {
   description = "The Load Balancer name"
-  value = aws_alb.default.name
+  value = aws_alb.default[0].name
 }
 
 output "lb_fqdns" {
   description = "The Load Balancer FQDNS"
-  value = aws_alb.default.dns_name
+  value = aws_alb.default[0].dns_name
 }
 
 output "route53_record" {
