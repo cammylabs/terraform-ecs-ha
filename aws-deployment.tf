@@ -98,7 +98,7 @@ resource "null_resource" "deploy_new_task" {
       DEPLOY_SPEC = data.template_file.container_spec.rendered
       DEPLOY_ROOT = local.deployment_root_path
       ENVIRONMENT = var.app_environment
-      APP_NAME    = var.app_name
+      APP_NAME    = local.docker_app_name
     }
   }
 
