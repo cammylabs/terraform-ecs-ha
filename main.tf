@@ -5,13 +5,6 @@ provider "external" { version = "~> 1.2" }
 provider "template" { version = "~> 2.1" }
 provider "null" { version = "~> 2.0" }
 
-# Configure as an AWS project
-provider "aws" {
-  region  = var.aws_region
-  profile = var.aws_profile
-  version = "~> 2.27"
-}
-
 # VPC
 data "aws_vpc" "default" {
   id = var.vpc_id
