@@ -26,7 +26,6 @@ docker_package(){
 
 docker_deploy(){
   info "Pushing Docker image ${DOCKER_IMAGE}..."
-  $(aws --profile ${AWS_PROFILE} --region ${AWS_REGION} ecr get-login --no-include-email)
   run_with_color docker push "${DOCKER_IMAGE}"
 }
 
@@ -68,7 +67,9 @@ if [ -f ./deploy.custom ]; then
    . ./deploy.custom
 fi
 
-docker_package && \
+
+$(aws --profile ${AWS_PROFILE} --region ${AWS_REGION} ecr get-login --no-include-email) && \
+  docker_package && \
   docker_deploy && \
   codedeploy_deploy ||
   exit 3
