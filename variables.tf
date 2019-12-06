@@ -16,6 +16,11 @@ variable "datadog_api_key" {
   description = "DataDog API KEY. https://docs.datadoghq.com/agent/docker/?tab=standard"
 }
 
+variable "docker_app_name" {
+  description = "The 'app_name' to be used inside the Docker image. If not defined, 'app_name' will be used."
+  default = ""
+}
+
 variable "docker_root_path" {
   description = "The root folder to generate the Docker image. Usually the place where Dockerfile is located"
 }
@@ -155,6 +160,7 @@ variable "auth0_user_info_endpoint" { default = "" }
 
 # Computed global variables
 locals {
+  docker_app_name = var.docker_app_name == "" ? var.app_name : var.docker_app_name
   using_auth0 = var.auth0_client_id != ""
   cannonical_name = "${var.app_name}-${var.app_environment}"
   route53_record = var.route53_record_name == "" ? local.cannonical_name : var.route53_record_name
