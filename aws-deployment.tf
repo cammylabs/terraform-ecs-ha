@@ -1,6 +1,12 @@
 locals {
   file_codedeploy_role   = "${path.module}/aws-deployment-assume-role.json"
   file_codedeploy_policy = "${path.module}/aws-deployment-role-policy.json"
+  codedeploy_tracker_lambda_name = "codededploy-deployment-tracker-${var.app_environment}"
+}
+
+# Lambda listening to CodeDeploy Topics
+data "aws_lambda_function" "codedeploy-tracker-lambda" {
+  function_name = local.codedeploy_tracker_lambda_name
 }
 
 # CodeDeploy Permissions
@@ -63,6 +69,12 @@ resource "aws_codedeploy_deployment_group" "default" {
       target_group { name = aws_alb_target_group.blue.name }
       target_group { name = aws_alb_target_group.green.name }
     }
+  }
+
+  trigger_configuration {
+    trigger_events  = ["DeploymentStart", "DeploymentSuccess", "DeploymentFailure"]
+    trigger_name    =  "${aws_codedeploy_app.default.name}-notification}"
+    trigger_target_arn = data.aws_lambda_function.codedeploy-tracker-lambda.arn
   }
 }
 
