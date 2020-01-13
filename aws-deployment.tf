@@ -1,12 +1,11 @@
 locals {
   file_codedeploy_role   = "${path.module}/aws-deployment-assume-role.json"
   file_codedeploy_policy = "${path.module}/aws-deployment-role-policy.json"
-  codedeploy_tracker_lambda_name = "codededploy-deployment-tracker-${var.app_environment}"
+  codedeploy_tracker_lambda_name = "${var.app_environment}-sns-topic"
 }
 
-# Lambda listening to CodeDeploy Topics
-data "aws_lambda_function" "codedeploy-tracker-lambda" {
-  function_name = local.codedeploy_tracker_lambda_name
+data "aws_sns_topic" "slack_sns_topic" {
+  name = "staging-au-sns-topic"
 }
 
 # CodeDeploy Permissions
@@ -73,13 +72,14 @@ resource "aws_codedeploy_deployment_group" "default" {
 
   trigger_configuration {
     trigger_events  = ["DeploymentStart", "DeploymentSuccess", "DeploymentFailure"]
-    trigger_name    =  "${aws_codedeploy_app.default.name}-notification}"
-    trigger_target_arn = data.aws_lambda_function.codedeploy-tracker-lambda.arn
+    trigger_name    =  "${aws_codedeploy_app.default.name}-notification"
+    trigger_target_arn = data.aws_sns_topic.slack_sns_topic.arn
   }
 }
 
 # Uploading new version
 resource "null_resource" "deploy_new_task" {
+
   triggers = {
     docker_image = "${local.cannonical_name}-${var.app_version}"
     task_def     = base64sha256(data.template_file.container_task.rendered)
