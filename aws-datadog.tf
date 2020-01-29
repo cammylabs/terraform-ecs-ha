@@ -1,6 +1,7 @@
 resource "aws_ecs_task_definition" "datadog_definiton" {
   family = "${var.docker_app_name}-datadog-task-${var.app_environment}-1"
-  task_role_arn = aws_iam_role.ecs-datadog-role.arn
+
+  task_role_arn = data.aws_iam_role.ecs-datadog-role.arn
 
   container_definitions = <<EOF
     [
@@ -61,40 +62,7 @@ resource "aws_ecs_service" "datadog" {
   scheduling_strategy = "DAEMON"
 }
 
-
-
-## PERMISSIONS
-
-resource "aws_iam_role" "ecs-datadog-role" {
-  name = "${var.docker_app_name}-${var.app_environment}-jenkins-ecs-datadog-role"
-  assume_role_policy = data.aws_iam_policy_document.ecs-iam-task-role.json
+data "aws_iam_role" "ecs-datadog-role"  {
+  name = "${var.app_environment}-ecs-datadog-role"
 }
 
-data "aws_iam_policy_document" "ecs-iam-task-role" {
-  statement {
-    effect = "Allow"
-    actions = [ "sts:AssumeRole" ]
-    principals {
-      type = "Service"
-      identifiers = [ "ecs-tasks.amazonaws.com" ]
-    }
-  }
-}
-
-
-data "aws_iam_policy_document" "datadog-iam-policy" {
-  statement {
-    sid = "AllowDatadogToReadECSMetrics"
-    effect = "Allow"
-    actions = [
-      "ecs:RegisterContainerInstance",
-      "ecs:DeregisterContainerInstance",
-      "ecs:DiscoverPollEndpoint",
-      "ecs:Submit*",
-      "ecs:Poll",
-      "ecs:StartTask",
-      "ecs:StartTelemetrySession"
-    ]
-    resources = [ "*" ]
-  }
-}

@@ -5,7 +5,7 @@ locals {
 }
 
 data "aws_sns_topic" "slack_sns_topic" {
-  name = "staging-au-sns-topic"
+  name = "${var.app_environment}-sns-topic"
 }
 
 # CodeDeploy Permissions
