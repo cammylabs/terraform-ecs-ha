@@ -150,10 +150,6 @@ variable "lb_slow_start" {
   default = 0
 }
 
-variable "datadog-extra-config" {
-  default = "do_something.sh; ./init"
-}
-
 # Auth0 Variables (optional, use only when required)
 variable "auth0_authorization_endpoint" { default = "" }
 variable "auth0_client_id" { default = "" }
