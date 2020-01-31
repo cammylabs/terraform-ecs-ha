@@ -4,8 +4,9 @@ locals {
   codedeploy_tracker_lambda_name = "${var.app_environment}-sns-topic"
 }
 
-data "aws_sns_topic" "slack_sns_topic" {
-  name = "${var.app_environment}-sns-topic"
+resource "aws_sns_topic" "slack" {
+  name = "${local.cannonical_name}-slack"
+
 }
 
 # CodeDeploy Permissions
