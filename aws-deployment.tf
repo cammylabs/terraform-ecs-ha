@@ -6,7 +6,6 @@ locals {
 
 resource "aws_sns_topic" "slack" {
   name = "${local.cannonical_name}-slack"
-
 }
 
 # CodeDeploy Permissions
@@ -74,7 +73,7 @@ resource "aws_codedeploy_deployment_group" "default" {
   trigger_configuration {
     trigger_events  = ["DeploymentStart", "DeploymentSuccess", "DeploymentFailure"]
     trigger_name    =  "${aws_codedeploy_app.default.name}-notification"
-    trigger_target_arn = data.aws_sns_topic.slack_sns_topic.arn
+    trigger_target_arn = aws_sns_topic.slack.arn
   }
 }
 
