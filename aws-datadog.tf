@@ -61,7 +61,51 @@ resource "aws_ecs_service" "datadog" {
   scheduling_strategy = "DAEMON"
 }
 
-data "aws_iam_role" "ecs-datadog-role"  {
-  name = "${var.app_environment}-ecs-datadog-role"
+
+
+## PERMISSIONS
+
+resource "aws_iam_role" "datadog-ecs" {
+  name = "${local.cannonical_name}-ecs-datadog-role"
+  assume_role_policy = data.aws_iam_policy_document.datadog-iam-role.json
 }
 
+resource "aws_iam_policy" "datadog-ecs" {
+  name = "${local.cannonical_name}-ecs-datadog-policy"
+  policy = data.aws_iam_policy_document.datadog-iam-policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "datadog-policy-role" {
+  role = aws_iam_role.datadog-ecs.name
+  policy_arn = aws_iam_policy.datadog-ecs.arn
+}
+
+
+data "aws_iam_policy_document" "datadog-iam-role" {
+  statement {
+    effect = "Allow"
+    actions = [ "sts:AssumeRole" ]
+    principals {
+      type = "Service"
+      identifiers = [ "ecs-tasks.amazonaws.com" ]
+    }
+  }
+}
+
+
+data "aws_iam_policy_document" "datadog-iam-policy" {
+  statement {
+    sid = "AllowDatadogToReadECSMetrics"
+    effect = "Allow"
+    actions = [
+      "ecs:RegisterContainerInstance",
+      "ecs:DeregisterContainerInstance",
+      "ecs:DiscoverPollEndpoint",
+      "ecs:Submit*",
+      "ecs:Poll",
+      "ecs:StartTask",
+      "ecs:StartTelemetrySession"
+    ]
+    resources = [ "*" ]
+  }
+}
