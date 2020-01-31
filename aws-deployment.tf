@@ -6,6 +6,7 @@ locals {
 
 resource "aws_sns_topic" "slack" {
   name = "${local.cannonical_name}-slack"
+
 }
 
 # CodeDeploy Permissions
