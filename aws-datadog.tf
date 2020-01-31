@@ -61,8 +61,6 @@ resource "aws_ecs_service" "datadog" {
   scheduling_strategy = "DAEMON"
 }
 
-
-
 ## PERMISSIONS
 
 resource "aws_iam_role" "datadog-ecs" {
@@ -108,4 +106,5 @@ data "aws_iam_policy_document" "datadog-iam-policy" {
     ]
     resources = [ "*" ]
   }
+
 }
