@@ -1,6 +1,6 @@
 resource "aws_ecs_task_definition" "datadog_definiton" {
   family = "${var.docker_app_name}-datadog-task-${var.app_environment}-1"
-  task_role_arn = data.aws_iam_role.ecs-datadog-role.arn
+  task_role_arn = aws_iam_role.datadog-ecs.arn
 
   container_definitions = <<EOF
     [
