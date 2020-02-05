@@ -7,6 +7,10 @@ data "aws_lambda_function" "codedeploy_tracker" {
   function_name = "codedeploy-tracker-${var.app_environment}"
 }
 
+data "aws_lambda_function" "codedeploy_tracker" {
+  function_name = "codedeploy-tracker-${var.app_environment}"
+}
+
 resource "aws_sns_topic" "slack" {
   name = "${local.cannonical_name}-slack"
 }
