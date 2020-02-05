@@ -20,7 +20,8 @@ locals {
         Effect: "Allow",
         Action: [
           "logs:PutLogEvents",
-          "logs:CreateLogStream"
+          "logs:CreateLogStream",
+          "cloudwatch:PutMetricData"
         ]
         Resource: aws_cloudwatch_log_group.default.arn
       }
