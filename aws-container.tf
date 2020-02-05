@@ -22,7 +22,7 @@ locals {
           "logs:PutLogEvents",
           "logs:CreateLogStream"
         ]
-        Resource: aws_cloudwatch_log_group.default.arn
+        Resource: "*"
       }
     ]
   }
