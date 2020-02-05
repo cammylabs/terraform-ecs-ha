@@ -1,7 +1,8 @@
 locals {
-  file_codedeploy_role   = "${path.module}/aws-deployment-assume-role.json"
+  file_codedeploy_role = "${path.module}/aws-deployment-assume-role.json"
   file_codedeploy_policy = "${path.module}/aws-deployment-role-policy.json"
   codedeploy_tracker_lambda_name = "${var.app_environment}-sns-topic"
+}
 
 data "aws_lambda_function" "codedeploy_tracker" {
   function_name = "codedeploy-tracker-${var.app_environment}"
