@@ -13,7 +13,6 @@ resource "aws_sns_topic_subscription" "slack_lambda_subscription" {
 }
 
 resource "aws_lambda_permission" "with_sns" {
-  statement_id = "AllowExecutionFromSNS"
   action = "lambda:InvokeFunction"
   function_name = data.aws_lambda_function.codedeploy_tracker.arn
   principal = "sns.amazonaws.com"
