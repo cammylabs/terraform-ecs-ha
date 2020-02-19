@@ -57,20 +57,9 @@ ECS_FILE_DEPLOY_SPEC=${ECS_FILE_DEPLOY_SPEC?"Not defined"}
 APP_NAME=${APP_NAME?"Not defined"}
 ENVIRONMENT=${ENVIRONMENT?"Not defined"}
 
-if [[ -n "${AWS_SESSION_TOKEN+x}" ]]; then
-    echo "Using environment variables as AWS credentials."
-    unset AWS_PROFILE
-    AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY?"Not defined"}
-    AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID?"Not defined"}
-else
-    echo "Using credentials file as AWS credentials."
-    AWS_PROFILE=${AWS_PROFILE?"Not defined"}
-fi
-
 if [ -f ./deploy.custom ]; then
    . ./deploy.custom
 fi
-
 
 $(aws --region ${AWS_REGION} ecr get-login --no-include-email) && \
   docker_package && \
