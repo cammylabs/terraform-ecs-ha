@@ -1,8 +1,8 @@
 locals {
 
-  lambda_codedeploy_name = "codededploy-deployment-tracker-${var.app_environment}"
+  lambda_codedeploy_name = "${local.cannonical_name}-codededploy-deployment-tracker"
 
-  lambda_codededploy_policy = {
+  lambda_codedeploy_policy = {
     Version: "2012-10-17",
     Statement: [
       {
@@ -41,7 +41,7 @@ data "archive_file" "codedeploy_tracker" {
 
 
 resource "aws_lambda_function" "codedeploy_tracker" {
-  function_name = "codedeploy-tracker-${local.cannonical_name}"
+  function_name = "${local.cannonical_name}-codedeploy-tracker"
   role = aws_iam_role.codedeploy_tracker.arn
   handler = "main.handler"
   description = "SNS Client that post CodeDeploy status to Slack"
@@ -61,11 +61,11 @@ resource "aws_lambda_function" "codedeploy_tracker" {
 
 resource "aws_iam_role" "codedeploy_tracker" {
   name = local.lambda_codedeploy_name
-  assume_role_policy = jsonencode(local.lambda_codededploy_policy)
+  assume_role_policy = jsonencode(local.lambda_codedeploy_policy)
 }
 
 resource "aws_iam_policy" "codedeploy_tracker" {
-  name = "lambda_codedeploy_name-${var.app_environment}"
+  name = "${local.cannonical_name}-lambda_codedeploy_name"
   policy = jsonencode(local.codedeploy_lambda_role)
 }
 
@@ -75,7 +75,7 @@ resource "aws_iam_role_policy_attachment" "codedeploy_lambda" {
 }
 
 resource "aws_sns_topic" "sns_slack_tracker" {
-  name = "${var.app_environment}-sns-topic"
+  name = "${local.cannonical_name}-slack-codedeploy-sns-topic"
 
 }
 

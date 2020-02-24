@@ -158,6 +158,14 @@ variable "slack_webhook_codedeploy" {
   description = "Slack channel webhook. Codedeploy messages are going to be forwarded and posted there."
 }
 
+variable "datadog_environment_tag" {
+  description = "Helps to sort out logs in datadoghq. Example: develop"
+}
+
+variable "datadog_region_tag" {
+  description = "Helps to sort out logs in datadoghq, Example: au"
+}
+
 # Auth0 Variables (optional, use only when required)
 variable "auth0_authorization_endpoint" { default = "" }
 variable "auth0_client_id" { default = "" }
