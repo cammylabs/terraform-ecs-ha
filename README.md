@@ -26,7 +26,7 @@ module "terraform-ecs-ha" {
   // ECS
   ecs_friendly_dns = "${var.dns_domain}"
 
-  datadog_environment_tag var.datadog_environment_tag // eg develop
+  datadog_environment_tag = var.datadog_environment_tag // eg develop
   datadog_region_tag = var.datadog_region_tag // e.g. au
   slack_webhook_codedeploy = var.slack_webhook_codedeploy 
 }

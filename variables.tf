@@ -156,14 +156,17 @@ variable "datadog-extra-config" {
 
 variable "slack_webhook_codedeploy" {
   description = "Slack channel webhook. Codedeploy messages are going to be forwarded and posted there."
+  default = "https://hooks.slack.com/services/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"
 }
 
 variable "datadog_environment_tag" {
   description = "Helps to sort out logs in datadoghq. Example: develop"
+  default = var.app_name
 }
 
 variable "datadog_region_tag" {
   description = "Helps to sort out logs in datadoghq, Example: au"
+  default = var.app_environment
 }
 
 # Auth0 Variables (optional, use only when required)
