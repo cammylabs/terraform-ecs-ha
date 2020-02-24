@@ -154,6 +154,10 @@ variable "datadog-extra-config" {
   default = "do_something.sh; ./init"
 }
 
+variable "slack_webhook_codedeploy" {
+  description = "Slack channel webhook. Codedeploy messages are going to be forwarded and posted there."
+}
+
 # Auth0 Variables (optional, use only when required)
 variable "auth0_authorization_endpoint" { default = "" }
 variable "auth0_client_id" { default = "" }
@@ -173,6 +177,9 @@ locals {
     app_name        = var.app_name
     app_environment = var.app_environment
   }
+  lambdas_dir = "${path.module}/lambdas"
+  output_dir = "${path.module}/dist"
 
   datadog-ecs-name = "${var.app_name}-datadog-ecs-service-${var.app_environment}"
+
 }
