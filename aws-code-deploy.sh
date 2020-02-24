@@ -27,7 +27,7 @@ docker_deploy(){
 codedeploy_deploy(){
   info "Notifying CodeDeploy about the new software revision..."
   aws ecs deploy \
-    --profile ${AWS_PROFILE} --region ${AWS_REGION} \
+    --region ${AWS_REGION} \
     --service ${ECS_SERVICE} \
     --cluster ${ECS_CLUSTER} \
     --task-definition "${ECS_FILE_TASK_DEF}" \
@@ -45,7 +45,6 @@ else
     . ${CONF}
 fi
 
-AWS_PROFILE=${AWS_PROFILE?"Not defined"}
 AWS_REGION=${AWS_REGION?"Not defined"}
 DOCKER_FOLDER=${DOCKER_FOLDER?"Not defined"}
 DOCKER_IMAGE=${DOCKER_IMAGE?"Not defined"}
@@ -62,8 +61,7 @@ if [ -f ./deploy.custom ]; then
    . ./deploy.custom
 fi
 
-
-$(aws --profile ${AWS_PROFILE} --region ${AWS_REGION} ecr get-login --no-include-email) && \
+$(aws --region ${AWS_REGION} ecr get-login --no-include-email) && \
   docker_package && \
   docker_deploy && \
   codedeploy_deploy ||
