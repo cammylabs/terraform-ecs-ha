@@ -161,12 +161,10 @@ variable "slack_webhook_codedeploy" {
 
 variable "datadog_environment_tag" {
   description = "Helps to sort out logs in datadoghq. Example: develop"
-  default = var.app_name
 }
 
 variable "datadog_region_tag" {
   description = "Helps to sort out logs in datadoghq, Example: au"
-  default = var.app_environment
 }
 
 # Auth0 Variables (optional, use only when required)
@@ -192,5 +190,8 @@ locals {
   output_dir = "${path.module}/dist"
 
   datadog-ecs-name = "${var.app_name}-datadog-ecs-service-${var.app_environment}"
+
+  datadog_environment_tag = var.datadog_environment_tag == "" ? var.app_name : var.datadog_environment_tag
+  datadog_region_tag = var.datadog_region_tag == "" ? var.app_environment : var.datadog_region_tag
 
 }

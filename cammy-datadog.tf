@@ -2,7 +2,7 @@ locals {
   lambda_datadog_name = "${local.cannonical_name}-datadog-logs"
   ecs_datadog_name = "${local.cannonical_name}-datadog-fargate"
 
-  datadog_tags = "environment:${var.datadog_environment_tag}, region:${var.datadog_region_tag}"
+  datadog_tags = "environment:${local.datadog_environment_tag}, region:${local.datadog_region_tag}"
 
   lambda_datadog_policy = {
     Version: "2012-10-17",
