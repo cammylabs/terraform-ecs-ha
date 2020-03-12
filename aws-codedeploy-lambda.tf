@@ -1,8 +1,8 @@
 locals {
 
   lambda_codedeploy_name = "${local.cannonical_name}-codededploy-deployment-tracker"
-
   lambda_codedeploy_policy = {
+
     Version: "2012-10-17",
     Statement: [
       {
@@ -41,6 +41,7 @@ data "archive_file" "codedeploy_tracker" {
 
 
 resource "aws_lambda_function" "codedeploy_tracker" {
+
   function_name = "${local.cannonical_name}-codedeploy-tracker"
   role = aws_iam_role.codedeploy_tracker.arn
   handler = "main.handler"
@@ -66,6 +67,7 @@ resource "aws_iam_role" "codedeploy_tracker" {
 
 resource "aws_iam_policy" "codedeploy_tracker" {
   name = "${local.cannonical_name}-lambda_codedeploy_name"
+
   policy = jsonencode(local.codedeploy_lambda_role)
 }
 
@@ -76,7 +78,6 @@ resource "aws_iam_role_policy_attachment" "codedeploy_lambda" {
 
 resource "aws_sns_topic" "sns_slack_tracker" {
   name = "${local.cannonical_name}-slack-codedeploy-sns-topic"
-
 }
 
 resource "aws_sns_topic_subscription" "sns_subscription" {

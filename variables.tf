@@ -167,6 +167,7 @@ variable "datadog_environment_tag" {
 variable "datadog_region_tag" {
   description = "Helps to sort out logs in datadoghq, Example: au"
   default = ""
+
 }
 
 # Auth0 Variables (optional, use only when required)
@@ -188,8 +189,6 @@ locals {
     app_name        = var.app_name
     app_environment = var.app_environment
   }
-  lambdas_dir = "${path.module}/lambdas"
-  output_dir = "${path.module}/dist"
 
   datadog-ecs-name = "${var.app_name}-datadog-ecs-service-${var.app_environment}"
 
