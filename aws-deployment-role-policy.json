@@ -9,7 +9,8 @@
         "ecs:*",
         "elasticloadbalancing:*",
         "codedeploy:*",
-        "iam:PassRole"
+        "iam:PassRole",
+        "SNS:Publish"
       ],
       "Resource": "*"
     }

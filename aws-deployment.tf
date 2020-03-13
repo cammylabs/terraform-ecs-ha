@@ -1,6 +1,7 @@
 locals {
-  file_codedeploy_role   = "${path.module}/aws-deployment-assume-role.json"
+  file_codedeploy_role = "${path.module}/aws-deployment-assume-role.json"
   file_codedeploy_policy = "${path.module}/aws-deployment-role-policy.json"
+  codedeploy_tracker_lambda_name = "${var.app_environment}-sns-topic"
 }
 
 # CodeDeploy Permissions
@@ -64,10 +65,17 @@ resource "aws_codedeploy_deployment_group" "default" {
       target_group { name = aws_alb_target_group.green.name }
     }
   }
+
+  trigger_configuration {
+    trigger_events  = ["DeploymentStart", "DeploymentSuccess", "DeploymentFailure"]
+    trigger_name    =  "${aws_codedeploy_app.default.name}-slack"
+    trigger_target_arn = aws_sns_topic.slack.arn
+  }
 }
 
 # Uploading new version
 resource "null_resource" "deploy_new_task" {
+
   triggers = {
     docker_image = "${local.cannonical_name}-${var.app_version}"
     task_def     = base64sha256(data.template_file.container_task.rendered)
@@ -98,7 +106,7 @@ resource "null_resource" "deploy_new_task" {
       DEPLOY_SPEC = data.template_file.container_spec.rendered
       DEPLOY_ROOT = local.deployment_root_path
       ENVIRONMENT = var.app_environment
-      APP_NAME    = var.app_name
+      APP_NAME    = local.docker_app_name
     }
   }
 

@@ -16,6 +16,11 @@ variable "datadog_api_key" {
   description = "DataDog API KEY. https://docs.datadoghq.com/agent/docker/?tab=standard"
 }
 
+variable "docker_app_name" {
+  description = "The 'app_name' to be used inside the Docker image. If not defined, 'app_name' will be used."
+  default = ""
+}
+
 variable "docker_root_path" {
   description = "The root folder to generate the Docker image. Usually the place where Dockerfile is located"
 }
@@ -145,6 +150,26 @@ variable "lb_slow_start" {
   default = 0
 }
 
+variable "datadog-extra-config" {
+  default = "do_something.sh; ./init"
+}
+
+variable "slack_webhook_codedeploy" {
+  description = "Slack channel webhook. Codedeploy messages are going to be forwarded and posted there."
+  default = "https://hooks.slack.com/services/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"
+}
+
+variable "datadog_environment_tag" {
+  description = "Helps to sort out logs in datadoghq. Example: develop"
+  default = ""
+}
+
+variable "datadog_region_tag" {
+  description = "Helps to sort out logs in datadoghq, Example: au"
+  default = ""
+
+}
+
 # Auth0 Variables (optional, use only when required)
 variable "auth0_authorization_endpoint" { default = "" }
 variable "auth0_client_id" { default = "" }
@@ -155,6 +180,7 @@ variable "auth0_user_info_endpoint" { default = "" }
 
 # Computed global variables
 locals {
+  docker_app_name = var.docker_app_name == "" ? var.app_name : var.docker_app_name
   using_auth0 = var.auth0_client_id != ""
   cannonical_name = "${var.app_name}-${var.app_environment}"
   route53_record = var.route53_record_name == "" ? local.cannonical_name : var.route53_record_name
@@ -163,4 +189,12 @@ locals {
     app_name        = var.app_name
     app_environment = var.app_environment
   }
+  lambdas_dir = "${path.module}/lambdas"
+  output_dir = "${path.module}/dist"
+
+  datadog-ecs-name = "${var.app_name}-datadog-ecs-service-${var.app_environment}"
+  datadog_environment_tag = var.datadog_environment_tag == "" ? var.app_name : var.datadog_environment_tag
+  datadog_region_tag = var.datadog_region_tag == "" ? var.app_environment : var.datadog_region_tag
+
+
 }
