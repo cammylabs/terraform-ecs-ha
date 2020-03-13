@@ -193,8 +193,8 @@ locals {
   output_dir = "${path.module}/dist"
 
   datadog-ecs-name = "${var.app_name}-datadog-ecs-service-${var.app_environment}"
-  datadog_environment_tag = var.datadog_environment_tag == "" ? var.app_name : var.datadog_environment_tag
-  datadog_region_tag = var.datadog_region_tag == "" ? var.app_environment : var.datadog_region_tag
+  datadog_environment_tag = var.datadog_environment_tag == "" ? var.app_environment : var.datadog_environment_tag
+  datadog_region_tag = var.datadog_region_tag == "" ? var.aws_region : var.datadog_region_tag
 
 
 }
