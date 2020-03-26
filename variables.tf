@@ -170,18 +170,9 @@ variable "datadog_region_tag" {
 
 }
 
-# Auth0 Variables (optional, use only when required)
-variable "auth0_authorization_endpoint" { default = "" }
-variable "auth0_client_id" { default = "" }
-variable "auth0_client_secret" { default = "" }
-variable "auth0_issuer" { default = "" }
-variable "auth0_token_endpoint" { default = "" }
-variable "auth0_user_info_endpoint" { default = "" }
-
 # Computed global variables
 locals {
   docker_app_name = var.docker_app_name == "" ? var.app_name : var.docker_app_name
-  using_auth0 = var.auth0_client_id != ""
   cannonical_name = "${var.app_name}-${var.app_environment}"
   route53_record = var.route53_record_name == "" ? local.cannonical_name : var.route53_record_name
   deployment_root_path = var.deployment_root_path == "" ? "${var.docker_root_path}/../deployment" : var.deployment_root_path
