@@ -61,7 +61,7 @@ if [ -f ./deploy.custom ]; then
    . ./deploy.custom
 fi
 
-$(aws --region ${AWS_REGION} ecr get-login --no-include-email) && \
+aws ecr get-login-password | docker login --username AWS --password-stdin ${DOCKER_IMAGE} && \
   docker_package && \
   docker_deploy && \
   codedeploy_deploy ||
