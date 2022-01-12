@@ -110,7 +110,6 @@ data "template_file" "container_task" {
     memory             = var.ecs_memory
     execution_role_arn = aws_iam_role.container.arn
     task_role_arn      = aws_iam_role.container.arn
-    datadog_api_key    = var.datadog_api_key
     app_name           = var.docker_app_name
     environment        = var.app_environment
   }

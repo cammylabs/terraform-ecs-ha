@@ -26,8 +26,6 @@ module "terraform-ecs-ha" {
   // ECS
   ecs_friendly_dns = "${var.dns_domain}"
 
-  datadog_environment_tag = var.datadog_environment_tag // eg develop
-  datadog_region_tag = var.datadog_region_tag // e.g. au
   slack_webhook_codedeploy = var.slack_webhook_codedeploy 
 }
 ```
@@ -45,8 +43,6 @@ Aside from them, you should also provide:
 - `app_name` - An identifier for this project. It should be unique once it will be used as prefix for AWS resources
 - `app_version` - A unique version identifier for the application that will be deployed. Whenever this version changes, a new deployment will be automatically triggered.
 - `docker_root_path` - The root folder to generate the Docker image. Usually the place where Dockerfile is located.
-- `datadog_environment_tag` - Helper tag to identify and filter logs in datadoghq
-- `datadog_region_tag` - Helper tag to identify and filter logs in datadoghq
 - `slack_webhook_codedeploy` - Slack generated webhook that will accept codedeploy deployment messages 
 
 Below the remaining parameters that can be optionally configured:

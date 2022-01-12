@@ -12,10 +12,6 @@ variable "app_environment" {
   default     = "staging"
 }
 
-variable "datadog_api_key" {
-  description = "DataDog API KEY. https://docs.datadoghq.com/agent/docker/?tab=standard"
-}
-
 variable "docker_app_name" {
   description = "The 'app_name' to be used inside the Docker image. If not defined, 'app_name' will be used."
   default = ""
@@ -150,25 +146,12 @@ variable "lb_slow_start" {
   default = 0
 }
 
-variable "datadog-extra-config" {
-  default = "do_something.sh; ./init"
-}
 
 variable "slack_webhook_codedeploy" {
   description = "Slack channel webhook. Codedeploy messages are going to be forwarded and posted there."
   default = "https://hooks.slack.com/services/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"
 }
 
-variable "datadog_environment_tag" {
-  description = "Helps to sort out logs in datadoghq. Example: develop"
-  default = ""
-}
-
-variable "datadog_region_tag" {
-  description = "Helps to sort out logs in datadoghq, Example: au"
-  default = ""
-
-}
 
 # Computed global variables
 locals {
@@ -182,10 +165,6 @@ locals {
   }
   lambdas_dir = "${path.module}/lambdas"
   output_dir = "${path.module}/dist"
-
-  datadog-ecs-name = "${var.app_name}-datadog-ecs-service-${var.app_environment}"
-  datadog_environment_tag = var.datadog_environment_tag == "" ? var.app_environment : var.datadog_environment_tag
-  datadog_region_tag = var.datadog_region_tag == "" ? var.aws_region : var.datadog_region_tag
 
 
 }
