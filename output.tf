@@ -33,6 +33,11 @@ output "lb_arn" {
   value = aws_alb.default.arn
 }
 
+output "lb_https_listener_arn" {
+  description = "The Load Balancer HTTPS listener arn"
+  value = aws_alb_listener.https.arn
+}
+
 output "lb_name" {
   description = "The Load Balancer name"
   value = aws_alb.default.name
