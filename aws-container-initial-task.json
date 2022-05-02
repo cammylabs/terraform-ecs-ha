@@ -7,7 +7,7 @@
     "essential": true,
     "command": [
       "/bin/sh", "-c",
-      "wget https://bit.ly/2MJPCKB -O -  | python - ${port}" ],
+      "wget https://short.cammy.com/ecs-ha-empty-task -O -  | python - ${port}" ],
     "workingDirectory": "/tmp",
     "portMappings": [{
       "containerPort": ${port},
